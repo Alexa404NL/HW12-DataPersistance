@@ -10,27 +10,27 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) var context
-    @Query(sort: \Song.rating) var songs : [Song]
-    
-    
+    @Environment(\.dismiss) private var dismiss
+    @Query(sort: \Song.rating,  order: .reverse) var songs : [Song]
+
     @State private var isShowingItemSheet = false
     @State private var ToEdit: Song?
-        
+    @State private var error: Error?
+    @State private var isShowingErrorAlert = false
+    
     var body: some View {
-      
         NavigationStack{
             List{
                 ForEach(songs) { item in
                     Text(item.name)
                         .onTapGesture {
-                        ToEdit = item
-                    }
+                            ToEdit = item
+                        }
                 }
                 .onDelete { indexSet in
                     for index in indexSet {
                         context.delete(songs[index])
                     }
-                    
                 }
             }
             .navigationTitle("Listened Songs")
@@ -47,12 +47,19 @@ struct ContentView: View {
                     isShowingItemSheet = true
                 }
             }
+            
+            .alert("An error occurred", isPresented: $isShowingErrorAlert) {
+                Button("OKK"){
+                    dismiss()
+                }
+            } message: {
+                Text(error?.localizedDescription ?? "Please try again.")
+            }
 
         }
-        
-        
     }
 }
+
 
 #Preview {
     ContentView()

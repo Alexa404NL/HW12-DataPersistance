@@ -12,7 +12,6 @@ import SwiftData
 struct MediaReviewApp: App {
     var body: some Scene {
         WindowGroup {
-            
             ContentView()
         }
         .modelContainer(for: [Song.self])
