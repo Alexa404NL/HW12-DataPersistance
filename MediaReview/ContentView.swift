@@ -6,19 +6,55 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+    @Environment(\.modelContext) var context
+    @Query(sort: \Song.rating) var songs : [Song]
+    
+    
+    @State private var isShowingItemSheet = false
+    @State private var ToEdit: Song?
+        
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+      
+        NavigationStack{
+            List{
+                ForEach(songs) { item in
+                    Text(item.name)
+                        .onTapGesture {
+                        ToEdit = item
+                    }
+                }
+                .onDelete { indexSet in
+                    for index in indexSet {
+                        context.delete(songs[index])
+                    }
+                    
+                }
+            }
+            .navigationTitle("Listened Songs")
+            .navigationBarTitleDisplayMode(.large)
+            .sheet(isPresented: $isShowingItemSheet) {
+                Sheet()
+            }
+            .sheet(item: $ToEdit){ song in
+                Sheet(song: song)
+            }
+           
+            .toolbar{
+                Button("Add", systemImage: "plus"){
+                    isShowingItemSheet = true
+                }
+            }
+
         }
-        .padding()
+        
+        
     }
 }
 
 #Preview {
     ContentView()
+        .modelContainer(for: [Song.self], inMemory: true)
 }

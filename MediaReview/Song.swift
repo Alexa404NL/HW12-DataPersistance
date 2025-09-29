@@ -13,10 +13,10 @@ class Song {
     var id = UUID()
     var name : String
     var genre : String
-    var image : String
+    var image : Data?
     var rating : Double
     
-    init(name: String, genre: String, image: String, rating: Double) {
+    init(name: String, genre: String, image: Data? = nil, rating: Double) {
         self.id = UUID()
         self.name = name
         self.genre = genre

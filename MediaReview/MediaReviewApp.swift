@@ -18,3 +18,4 @@ struct MediaReviewApp: App {
         .modelContainer(for: [Song.self])
     }
 }
+
